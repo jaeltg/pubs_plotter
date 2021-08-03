@@ -14,6 +14,7 @@ const center = {
   lat: 55.953251,
   lng: -3.188267
 }
+
 const options = {
   styles: mapStyle,
   disableDefaultUI: true,
@@ -23,7 +24,9 @@ const options = {
 
 function App() {
 
-  const [allPubLocations, setAllPubLocations] = useState([])
+  const [allPubLocations, setAllPubLocations] = useState([]);
+  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [shotScope, setShotScope] = useState(null);
 
   useEffect(() => {
     const request = new Request();
@@ -38,30 +41,50 @@ function App() {
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_KEY,
   })
 
-  if (loadError) return "Could not load maps";
+  if (loadError) return "Could not load map";
   if (!isLoaded) return "Loading..."
 
 
   return (
     <div className="App">
-    <h1 className="Title">PUB PLOTTER</h1>
+      <h1 className="Title">PUB PLOTTER</h1>
       <GoogleMap 
       mapContainerStyle={containerStyle}
       center = {center}
       zoom = {13}
       options={options}
-      // onLoad = {onLoad}
-      // onUnmount={onUnmount}
       >
-        {allPubLocations.map((pubLocation, i) => <Marker
-        key={i} 
-        position={pubLocation}
-        icon={{
-          url: '/icons/beer2.svg',
-          scaledSize: new window.google.maps.Size(30, 30),
+        {allPubLocations.map((pubLocation, i) => 
+          <Marker
+          key={i} 
+          position={pubLocation}
+          icon={{
+            url: '/icons/beer3.svg',
+            scaledSize: new window.google.maps.Size(40, 40),
+          }}
+          onClick={() => {setSelectedLocation(pubLocation)}}
+          />
+        )}
+        <Marker
+          position={{lat:55.93671, lng:-3.13809}}
+          icon={{
+            url: '/icons/golf-ball.svg',
+            scaledSize: new window.google.maps.Size(30, 30),
+          }}
+          onClick={() => {setShotScope({lat:55.93671, lng:-3.13809})}}
+        />
 
-        }}
-        />)}
+        {selectedLocation ? (<InfoWindow position={{lat: selectedLocation.lat, lng: selectedLocation.lng}} onCloseClick={() => {setSelectedLocation(null)}}>
+          <div>
+            <p>Pub Visited!</p>
+          </div>
+        </InfoWindow>) : null}
+
+       {shotScope ? (<InfoWindow position={{lat:55.93671, lng:-3.13809}} onCloseClick={() => {setShotScope(null)}}>
+          <div>
+            <p>Jael is Hired!</p>
+          </div>
+        </InfoWindow>) : null}
       </GoogleMap>
     </div>
   )
