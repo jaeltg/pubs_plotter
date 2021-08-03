@@ -1,4 +1,6 @@
 import './App.css';
+import { useState, useEffect } from 'react';
+import Request from './helpers/request';
 
 import {GoogleMap, useLoadScript, Marker, InfoWindow} from '@react-google-maps/api'
 import mapStyle from './mapStyle.js';
@@ -14,9 +16,23 @@ const center = {
 }
 const options = {
   styles: mapStyle,
+  disableDefaultUI: true,
+  zoomControl: true,
+  streetViewControl: true,
 }
 
 function App() {
+
+  const [allPubLocations, setAllPubLocations] = useState([])
+
+  useEffect(() => {
+    const request = new Request();
+
+    request.get('https://aqueous-shelf-20406.herokuapp.com/https://pubplotter.azurewebsites.net/Pubs/GetPubs')
+    .then((data) => {
+        setAllPubLocations(data)
+    })
+    }, []) 
 
   const {isLoaded, loadError} = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_KEY,
@@ -28,14 +44,25 @@ function App() {
 
   return (
     <div className="App">
+    <h1 className="Title">PUB PLOTTER</h1>
       <GoogleMap 
       mapContainerStyle={containerStyle}
       center = {center}
-      zoom = {11}
+      zoom = {13}
       options={options}
       // onLoad = {onLoad}
       // onUnmount={onUnmount}
-      ></GoogleMap>
+      >
+        {allPubLocations.map((pubLocation, i) => <Marker
+        key={i} 
+        position={pubLocation}
+        icon={{
+          url: '/icons/beer2.svg',
+          scaledSize: new window.google.maps.Size(30, 30),
+
+        }}
+        />)}
+      </GoogleMap>
     </div>
   )
 }
