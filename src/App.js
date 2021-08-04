@@ -61,6 +61,8 @@ function App() {
           icon={{
             url: '/icons/beer3.svg',
             scaledSize: new window.google.maps.Size(40, 40),
+            origin: new window.google.maps.Point(0, 0),
+            anchor: new window.google.maps.Point(15, 15),
           }}
           onClick={() => {setSelectedLocation(pubLocation)}}
           />
@@ -70,19 +72,23 @@ function App() {
           icon={{
             url: '/icons/golf-ball.svg',
             scaledSize: new window.google.maps.Size(30, 30),
+            origin: new window.google.maps.Point(0, 0),
+            anchor: new window.google.maps.Point(15, 15),
           }}
           onClick={() => {setShotScope({lat:55.93671, lng:-3.13809})}}
         />
 
         {selectedLocation ? (<InfoWindow position={{lat: selectedLocation.lat, lng: selectedLocation.lng}} onCloseClick={() => {setSelectedLocation(null)}}>
           <div>
-            <p>Pub Visited!</p>
+            <h3>Pub Visited &#10004;</h3>
           </div>
         </InfoWindow>) : null}
 
        {shotScope ? (<InfoWindow position={{lat:55.93671, lng:-3.13809}} onCloseClick={() => {setShotScope(null)}}>
-          <div>
-            <p>Jael is Hired!</p>
+          <div className="HIO">
+            <p>Hope my Pub Plotter is a...</p>
+            <img src={require("./holeInOne.gif").default} alt="Hole in One"/>
+            <h3>Hole in One!</h3>
           </div>
         </InfoWindow>) : null}
       </GoogleMap>
